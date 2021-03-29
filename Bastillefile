@@ -10,15 +10,15 @@ ARG DB_PASSWORD=changeme
 PKG mongodb36 npm icu git-lite vips
 
 # mongodb setup 
-CMD mongo --eval "use ${DB_NAME}; db.createUser( { user: "${DB_USER}", pwd: "{DB_PASSWORD}", roles: [ "readWrite" ] } ); db.grantRolesToUser("${DB_USER}",[{ role: "clusterMonitor", db: "admin" }]); db.grantRolesToUser("nodebb",[{ role: "clusterMonitor", db: "admin" }]);"
 SYSRC mondodb_enable=YES
 SERVICE mongodb start
+CMD mongo --eval "use ${DB_NAME}; db.createUser( { user: "${DB_USER}", pwd: "{DB_PASSWORD}", roles: [ "readWrite" ] } ); db.grantRolesToUser("${DB_USER}",[{ role: "clusterMonitor", db: "admin" }]); db.grantRolesToUser("nodebb",[{ role: "clusterMonitor", db: "admin" }]);"
 
 # nodebb setup
 CMD pw useradd -n ${NODEBB_USER} -d /nonexistent -s /bin/nologin
 CMD mkdir -p ${NODEBB_ROOT}
 CMD chown -R ${NODEBB_USER}:${NODEBB_USER} ${NODEBB_ROOT}
-CMD cd ${NODEBB_ROOT} && su -m $NODEBB_USER -c "git clone -b ${NODEBB_VERSION} https://github.com/NodeBB/NodeBB.git ."
+CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "git clone -b ${NODEBB_VERSION} https://github.com/NodeBB/NodeBB.git ."
 CMD echo "Please note the following"
 CMD echo "DB_USER ${DB_USER}"
 CMD echo "DB_NAME ${DB_NAME}"

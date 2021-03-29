@@ -25,7 +25,7 @@ CMD echo "DB_NAME ${DB_NAME}"
 CMD echo "DB_PASSWORD ${DB_PASSWORD}"
 CMD echo "Also backup the passord somewhere safe"
 # running the config
-CMD mdkir -p /tmp/npmcache
+CMD mkdir -p /tmp/npmcache
 CMD chown -R ${NODEBB_USER}:${NODEBB_USER} /tmp/npmcache
 CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "export HOME=/tmp/npmcache ; ./nodebb setup"
 CMD rm -rf /tmp/npmcache

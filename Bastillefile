@@ -25,5 +25,5 @@ CMD echo "DB_NAME ${DB_NAME}"
 CMD echo "DB_PASSWORD ${DB_PASSWORD}"
 CMD echo "Also backup the passord somewhere safe"
 # running the config
-CMD cd ${NODEBB_ROOT} && su -m $NODEBB_USER -c "./nodebb setup"
+CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "./nodebb setup"
 

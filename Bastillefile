@@ -1,0 +1,29 @@
+ARG NODEBB_ROOT=/usr/local/www/nodebb
+ARG NODEBB_VERSION=v1.16
+ARG NODEBB_USER=nodebb
+ARG DB_NAME=nodebb
+ARG DB_USER=nodebb
+# set it in the command line with `openssl rand -base64 31`
+ARG DB_PASSWORD=changeme
+
+# Package install
+PKG mongodb36 npm icu git-lite vips
+
+# mongodb setup 
+CMD mongo --eval "use ${DB_NAME}; db.createUser( { user: "${DB_USER}", pwd: "{DB_PASSWORD}", roles: [ "readWrite" ] } ); db.grantRolesToUser("${DB_USER}",[{ role: "clusterMonitor", db: "admin" }]); db.grantRolesToUser("nodebb",[{ role: "clusterMonitor", db: "admin" }]);"
+SYSRC mondodb_enable=YES
+SERVICE mongodb start
+
+# nodebb setup
+CMD pw useradd -n ${NODEBB_USER} -d /nonexistent -s /bin/nologin
+CMD mkdir -p ${NODEBB_ROOT}
+CMD chown -R ${NODEBB_USER}:${NODEBB_USER} ${NODEBB_ROOT}
+CMD cd ${NODEBB_ROOT} && su -m $NODEBB_USER -c "git clone -b ${NODEBB_VERSION} https://github.com/NodeBB/NodeBB.git ."
+CMD echo "Please note the following"
+CMD echo "DB_USER ${DB_USER}"
+CMD echo "DB_NAME ${DB_NAME}"
+CMD echo "DB_PASSWORD ${DB_PASSWORD}"
+CMD echo "Also backup the passord somewhere safe"
+# running the config
+CMD cd ${NODEBB_ROOT} && su -m $NODEBB_USER -c "./nodebb setup"
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+export npm_config_cache=${NPM_CACHE}
+cd ${NODEBB_ROOT} && su -m ${NODEBB_USER}  -c "./nodebb $1"
+

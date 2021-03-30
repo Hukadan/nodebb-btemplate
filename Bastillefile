@@ -1,4 +1,5 @@
 ARG NODEBB_ROOT=/usr/local/www/nodebb
+ARG NPM_CACHE=${NODEBB_ROOT}/.npm
 ARG NODEBB_VERSION=v1.16.2
 ARG NODEBB_USER=nodebb
 ARG DB_NAME=nodebb
@@ -9,25 +10,22 @@ ARG DB_PASSWORD=changeme
 # Package install
 PKG mongodb36 npm icu git-lite vips
 CP root /
+CP usr /
 RENDER /root/mongo-config.js
+RENDER /usr/local/bin/nodebb
+CMD chmod +x /usr/local/bin/nodebb
 # mongodb setup 
 SYSRC mongod_enable=YES
 SERVICE mongod start
 CMD mongo < /root/mongo-config.js
-
+CMD rm /root/mongo-config.js
 # nodebb setup
 CMD pw useradd -n ${NODEBB_USER} -d /nonexistent -s /bin/nologin
 CMD mkdir -p ${NODEBB_ROOT}
 CMD chown -R ${NODEBB_USER}:${NODEBB_USER} ${NODEBB_ROOT}
 CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "git clone -b ${NODEBB_VERSION} https://github.com/NodeBB/NodeBB.git ."
-CMD echo "Please note the following"
-CMD echo "DB_USER ${DB_USER}"
-CMD echo "DB_NAME ${DB_NAME}"
-CMD echo "DB_PASSWORD ${DB_PASSWORD}"
-CMD echo "Also backup the passord somewhere safe"
 # running the config
-CMD mkdir -p /tmp/npmcache
-CMD chown -R ${NODEBB_USER}:${NODEBB_USER} /tmp/npmcache
-CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "setenv npm_config_cache /tmp/npmcache ; ./nodebb setup"
-CMD rm -rf /tmp/npmcache
-CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "setenv npm_config_cache /tmp/npmcache ; ./nodebb start"
+CMD mkdir -p ${NPM_CACHE}
+CMD chown -R ${NODEBB_USER}:${NODEBB_USER} ${NPM_CACHE}
+CMD cd ${NODEBB_ROOT} && su -m ${NODEBB_USER} -c "setenv npm_config_cache ${NPM_CACHE} ; ./nodebb setup"
+CMD nodebb start

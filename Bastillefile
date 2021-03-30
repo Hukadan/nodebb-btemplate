@@ -1,8 +1,8 @@
 ARG NODEBB_ROOT=/usr/local/www/nodebb
 ARG NODEBB_VERSION=v1.16.2
-ARG NODEBB_URL="http://localhost"
+ARG NODEBB_URL=http://localhost
 ARG NODEBB_PORT=4567
-ARG NODEBB_SECRET="1defez-fefe111e-fef1e5-httfefe64-feezfze"
+ARG NODEBB_SECRET=1defez-fefe111e-fef1e5-httfefe64-feezfze
 ARG NODEBB_USER=nodebb
 ARG NPM_CACHE=${NODEBB_ROOT}/.npm
 ARG DB_NAME=nodebb
